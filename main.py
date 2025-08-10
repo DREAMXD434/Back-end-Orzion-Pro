@@ -1,10 +1,9 @@
-
 import os
 import httpx
 import json
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles # <-- ELIMINAR/COMENTAR
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -80,20 +79,31 @@ app = FastAPI(
 )
 
 # CORS configuration
+# --- INICIO DE AJUSTE CORS ---
+# Reemplaza la URL con la URL REAL de tu frontend de Netlify
+origins = [
+    "https://lambert-salamander-836e56.netlify.app", # <--- ¡CAMBIA ESTA URL!
+    "http://localhost:3000", # Para desarrollo local del frontend (si usas React/Vue/etc.)
+    "http://localhost:8888", # Para desarrollo local con Netlify Dev
+    # Puedes añadir más orígenes si es necesario, pero evita "*" en producción
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins, # <--- AHORA USA LA LISTA DE ORIGENES DEFINIDA
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# --- FIN DE AJUSTE CORS ---
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files # <-- COMENTAR O ELIMINAR ESTA SECCIÓN
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # Supabase configuration
-SUPABASE_URL = "https://sgrgafsyetebdkdkdqhp.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNncmdhZnN5ZXRlYmRrZGtkcWhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NDY2NzUsImV4cCI6MjA3MDQyMjY3NX0.Z5-twvwI3SwpibP3z7G6FEYVTYJBmUwg33_WXkxnUV8"
+SUPABASE_URL = "https://sgrgafsyetebdkdkdqhp.supabase.co" # Considera usar os.getenv aquí también
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNncmdhZnN5ZXRlYmRrZGtkcWhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MjcyNzUsImV4cCI6MjA3MDAwMzI3NX0.Z5-twvwI3SwpibP3z7G6FEYVTYJBUwg33_WXkxnUV8" # Considera usar os.getenv aquí también
 
 # Initialize Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
@@ -103,8 +113,8 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 
 if not OPENROUTER_API_KEY:
     print("⚠️  ADVERTENCIA: OPENROUTER_API_KEY variable de entorno no configurada")
-    print("   La aplicación funcionará pero no podrá generar respuestas de IA")
-    print("   Configura tu API key en Secrets para habilitar el chat")
+    print("    La aplicación funcionará pero no podrá generar respuestas de IA")
+    print("    Configura tu API key en Secrets para habilitar el chat")
 
 # Personalidades disponibles para Orzion Pro
 PERSONALITIES = {
@@ -210,12 +220,11 @@ PERSONALIDAD:
 - Enfoque en soluciones prácticas
 """
 
-
-
-@app.get("/")
-async def read_root():
-    """Serve the main HTML page"""
-    return FileResponse("static/index.html")
+# Endpoint para servir la página HTML principal # <-- COMENTAR O ELIMINAR ESTA SECCIÓN
+# @app.get("/")
+# async def read_root():
+#    """Serve the main HTML page"""
+#    return FileResponse("static/index.html")
 
 # Endpoints de autenticación
 @app.post("/api/register")
@@ -583,7 +592,7 @@ async def chat_completion(request: ChatRequestWithHistory):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://orzion.pro",
+        "HTTP-Referer": "https://orzion.pro", # <-- Asegúrate que esta URL sea la de tu frontend en Netlify
         "X-Title": "Orzion Pro by OrzattyStudios"
     }
     
