@@ -3,7 +3,7 @@ import httpx
 import json
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.staticfiles import StaticFiles # <-- ELIMINAR/COMENTAR
+# from fastapi.staticfiles import StaticFiles # <-- Esta línea fue eliminada/comentada
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
@@ -80,24 +80,24 @@ app = FastAPI(
 
 # CORS configuration
 # --- INICIO DE AJUSTE CORS ---
-# Reemplaza la URL con la URL REAL de tu frontend de Netlify
+# Hemos incluido tus URLs de Netlify aquí para permitir el acceso cruzado
 origins = [
-    "https://lambert-salamander-836e56.netlify.app", # <--- ¡CAMBIA ESTA URL!
-    "http://localhost:3000", # Para desarrollo local del frontend (si usas React/Vue/etc.)
-    "http://localhost:8888", # Para desarrollo local con Netlify Dev
-    # Puedes añadir más orígenes si es necesario, pero evita "*" en producción
+    "https://orzionpro.netlify.app",         # <-- Tu URL principal de Netlify
+    "https://lambert-salamander-836e56.netlify.app", # <-- Tu otra URL de Netlify si también la usas
+    "http://localhost:3000",                 # Para desarrollo local (si usas frameworks como React/Vue/Angular)
+    "http://localhost:8888",                 # Para desarrollo local con Netlify Dev
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins, # <--- AHORA USA LA LISTA DE ORIGENES DEFINIDA
+    allow_origins=origins, 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 # --- FIN DE AJUSTE CORS ---
 
-# Mount static files # <-- COMENTAR O ELIMINAR ESTA SECCIÓN
+# Mount static files # <-- Esta sección fue eliminada/comentada para el backend en Render
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
@@ -220,7 +220,7 @@ PERSONALIDAD:
 - Enfoque en soluciones prácticas
 """
 
-# Endpoint para servir la página HTML principal # <-- COMENTAR O ELIMINAR ESTA SECCIÓN
+# Endpoint para servir la página HTML principal # <-- Esta sección fue eliminada/comentada para el backend en Render
 # @app.get("/")
 # async def read_root():
 #    """Serve the main HTML page"""
@@ -592,7 +592,7 @@ async def chat_completion(request: ChatRequestWithHistory):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://orzion.pro", # <-- Asegúrate que esta URL sea la de tu frontend en Netlify
+        "HTTP-Referer": "https://orzionpro.netlify.app", # <-- ¡Actualizado con tu URL principal de Netlify!
         "X-Title": "Orzion Pro by OrzattyStudios"
     }
     
