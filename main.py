@@ -82,8 +82,8 @@ app = FastAPI(
 # --- INICIO DE AJUSTE CORS ---
 # Hemos incluido tus URLs de Netlify aquí para permitir el acceso cruzado
 origins = [
-    "https://orzionpro.netlify.app",         # <-- Tu URL principal de Netlify
-    "https://lambert-salamander-836e56.netlify.app", # <-- Tu otra URL de Netlify si también la usas
+    "https://orzionpro.netlify.app/",         # <-- Tu URL principal de Netlify
+    "https://orzionpro.netlify.app/", # <-- Tu otra URL de Netlify si también la usas
     "http://localhost:3000",                 # Para desarrollo local (si usas frameworks como React/Vue/Angular)
     "http://localhost:8888",                 # Para desarrollo local con Netlify Dev
 ]
