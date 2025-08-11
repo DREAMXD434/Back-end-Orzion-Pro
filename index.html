@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Orzion Pro - OrzattyStudios</title>
+    
+    <!-- PWA y optimización móvil -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Orzion Pro">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- Pantalla de autenticación -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-robot"></i> Orzion Pro</h1>
+                <p>Versión Mejorada de OrzattyGPT</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Iniciar Sesión</button>
+                <button class="auth-tab" data-tab="register">Registrarse</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <input type="text" id="loginUsername" placeholder="Nombre de usuario" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit" class="auth-button">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="registerUsername" placeholder="Nombre de usuario" required>
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Contraseña" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit" class="auth-button">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pantalla de configuración inicial -->
+    <div id="initialSetupScreen" class="setup-screen hidden">
+        <div class="setup-container">
+            <div class="setup-header">
+                <h1><i class="fas fa-cog"></i> Configuración Inicial</h1>
+                <p>Personaliza tu experiencia con Orzion Pro</p>
+            </div>
+            
+            <div class="setup-content">
+                <div class="setup-section">
+                    <h3><i class="fas fa-palette"></i> Tema de la Interfaz</h3>
+                    <div class="theme-options">
+                        <label class="theme-option">
+                            <input type="radio" name="theme" value="light" checked>
+                            <span class="theme-preview light">
+                                <i class="fas fa-sun"></i>
+                                Claro
+                            </span>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="theme" value="dark">
+                            <span class="theme-preview dark">
+                                <i class="fas fa-moon"></i>
+                                Oscuro
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setup-section">
+                    <h3><i class="fas fa-robot"></i> Personalidad del Asistente</h3>
+                    <select id="personalitySelect" class="personality-select">
+                        <!-- Se llena dinámicamente -->
+                    </select>
+                </div>
+                
+                <div class="setup-actions">
+                    <button onclick="UI.completeSetup()" class="setup-button">
+                        <i class="fas fa-check"></i> Continuar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de configuraciones -->
+    <div id="settingsScreen" class="settings-screen hidden">
+        <div class="settings-container">
+            <div class="settings-header">
+                <h2><i class="fas fa-cog"></i> Configuraciones</h2>
+                <button onclick="this.closest('.settings-screen').classList.add('hidden')" class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h3><i class="fas fa-palette"></i> Tema</h3>
+                    <div class="theme-options">
+                        <label class="theme-option">
+                            <input type="radio" name="settingsTheme" value="light">
+                            <span class="theme-preview light">
+                                <i class="fas fa-sun"></i>
+                                Claro
+                            </span>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="settingsTheme" value="dark">
+                            <span class="theme-preview dark">
+                                <i class="fas fa-moon"></i>
+                                Oscuro
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-robot"></i> Personalidad</h3>
+                    <select id="settingsPersonality" class="personality-select">
+                        <option value="professional">Profesional - Formal y técnico</option>
+                        <option value="friendly">Amigable - Casual y cercano</option>
+                        <option value="creative">Creativo - Imaginativo y artístico</option>
+                        <option value="educational">Educativo - Didáctico y paciente</option>
+                    </select>
+                </div>
+                
+                <div class="settings-actions">
+                    <button onclick="UI.saveSettingsChanges()" class="settings-save-button">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla principal de chat -->
+    <div id="chatScreen" class="chat-screen hidden">
+        <!-- Sidebar para historial y herramientas -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="usernameDisplay">Usuario</span>
+                </div>
+                <button id="sidebarToggle" class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-history"></i> Historial de Chats</h3>
+                    <div id="chatHistoryList" class="chat-history-list">
+                        <!-- Historial se carga dinámicamente -->
+                    </div>
+                    <button id="newChatBtn" class="new-chat-btn">
+                        <i class="fas fa-plus"></i> Nuevo Chat
+                    </button>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3><i class="fas fa-tools"></i> Herramientas Pro</h3>
+                    <div class="pro-tools">
+                        <button class="tool-btn" data-tool="code">
+                            <i class="fas fa-code"></i> Generador de Código
+                        </button>
+                        <button class="tool-btn" data-tool="translate">
+                            <i class="fas fa-language"></i> Traductor
+                        </button>
+                        <button class="tool-btn" data-tool="summarize">
+                            <i class="fas fa-compress"></i> Resumen de Texto
+                        </button>
+                        <button class="tool-btn" data-tool="analyze">
+                            <i class="fas fa-chart-bar"></i> Análisis de Datos
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="sidebar-controls">
+                    <button id="themeToggle" class="control-btn" title="Cambiar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="settingsButton" class="control-btn" title="Configuraciones">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+
+        <!-- Área principal de chat -->
+        <div class="main-chat-area">
+            <div class="chat-container">
+                <!-- Efectos de bienvenida -->
+                <div id="welcomeScreen" class="welcome-screen">
+                    <div class="welcome-content">
+                        <div class="welcome-logo">
+                            <i class="fas fa-robot animated-robot"></i>
+                        </div>
+                        <h1 class="welcome-title">Bienvenidos a Orzion Pro</h1>
+                        <p class="welcome-subtitle">Versión Mejorada de OrzattyGPT</p>
+                        <div class="sparkles">
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                            <div class="sparkle"></div>
+                        </div>
+                        <p class="welcome-hint">Escribe un mensaje para comenzar...</p>
+                    </div>
+                </div>
+
+                <div class="chat-header">
+                    <h1><i class="fas fa-robot"></i> Orzion Pro</h1>
+                    <p>Desarrollado por Dylan Orzatty - OrzattyStudios</p>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Los mensajes se cargan dinámicamente -->
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="input-group">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Escribe tu mensaje aquí..." 
+                            rows="1"
+                            maxlength="4000"
+                        ></textarea>
+                        <button id="stopButton" type="button" class="stop-button" style="display: none;">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                        <button id="sendButton" type="button">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="chat-controls">
+                        <div class="model-selector">
+                            <label for="modelSelect">Modelo:</label>
+                            <select id="modelSelect">
+                                <option value="deepseek/deepseek-chat">Orzion Pro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="advanced-options">
+                            <button id="streamToggle" class="toggle-btn active" title="Escritura progresiva">
+                                <i class="fas fa-stream"></i>
+                            </button>
+                            <button id="toolsToggle" class="toggle-btn" title="Herramientas Pro">
+                                <i class="fas fa-magic"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <p>Orzion Pro está escribiendo...</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span id="errorText"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
